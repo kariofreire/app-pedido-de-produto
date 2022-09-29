@@ -2,7 +2,12 @@
   <v-card class="mx-auto" max-width="100%" outlined>
     <v-card-text class="text-h6 mt-2 mb-2">
       Lista de Clientes
-      <v-btn outlined rounded text> Novo Cliente </v-btn>
+      <v-btn
+        outlined
+        rounded
+        text
+        @click="novoCliente"
+      > Novo Cliente </v-btn>
     </v-card-text>
 
     <v-card-text>
@@ -60,6 +65,8 @@
 </template>
 
 <script>
+import urlApi from '@/plugins/urlApi';
+
 export default {
   name: "ClientesView",
 
@@ -80,7 +87,9 @@ export default {
 
   methods: {
     getClientes() {
-      fetch(`http://localhost:8000/api/v1/clientes?page=${this.pagination.current}`, {
+      console.log(urlApi);
+
+      fetch(`${urlApi}/clientes?page=${this.pagination.current}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -91,8 +100,6 @@ export default {
         .then((res) => {
           if ([200].includes(res.code)) {
             const { data } = res;
-
-            console.log(data);
 
             this.clientes           = data.data;
             this.pagination.current = data.current_page;
@@ -106,6 +113,10 @@ export default {
 
     onPageChange() {
       this.getClientes()
+    },
+
+    novoCliente() {
+      this.$router.push('/novo-cliente')
     },
 
     detalhes(dados) {
