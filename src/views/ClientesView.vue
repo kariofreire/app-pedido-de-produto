@@ -49,7 +49,12 @@
     </v-card-text>
 
     <div class="text-center">
-      <v-pagination v-model="page" :length="15" :total-visible="7"></v-pagination>
+      <v-pagination
+        v-model="pagination.current"
+        :length="pagination.total"
+        :total-visible="7"
+        @input="onPageChange"
+      ></v-pagination>
     </div>
   </v-card>
 </template>
@@ -63,6 +68,10 @@ export default {
   data: () => ({
     clientes: [],
     page: 1,
+    pagination: {
+      current: 1,
+      total: 0
+    }
   }),
 
   created() {
@@ -71,7 +80,7 @@ export default {
 
   methods: {
     getClientes() {
-      fetch(`http://localhost:8000/api/v1/clientes`, {
+      fetch(`http://localhost:8000/api/v1/clientes?page=${this.pagination.current}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -81,11 +90,22 @@ export default {
         .then((response) => response.json())
         .then((res) => {
           if ([200].includes(res.code)) {
-            this.clientes = res.data.data;
+            const { data } = res;
+
+            console.log(data);
+
+            this.clientes           = data.data;
+            this.pagination.current = data.current_page;
+            this.pagination.total   = data.last_page;
+
           } else {
             this.$toasted.error(res.data);
           }
         });
+    },
+
+    onPageChange() {
+      this.getClientes()
     },
 
     detalhes(dados) {
