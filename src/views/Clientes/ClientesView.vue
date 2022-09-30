@@ -124,7 +124,22 @@ export default {
     },
 
     excluir(id) {
-      console.log(id);
+      fetch(`${urlApi}/clientes/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Access: "application/json",
+        },
+      })
+      .then((response) => response.json())
+      .then((res) => {
+        if ([200].includes(res.code)) {
+          this.getClientes();
+          this.$toasted.success("Cliente deletado com sucesso.");
+        } else {
+          this.$toasted.error(res.data);
+        }
+      });
     },
   },
 };
