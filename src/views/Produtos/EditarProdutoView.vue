@@ -101,8 +101,10 @@ export default {
         valor: this.valor
       };
 
-      fetch(`${urlApi}/produtos`, {
-          method: "POST",
+      const produtoId = this.$route.params.id;
+
+      fetch(`${urlApi}/produtos/${produtoId}`, {
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             "Access": "application/json"
