@@ -38,7 +38,7 @@
             <td>{{ item.nome }}</td>
             <td>{{ item.cor }}</td>
             <td>{{ item.tamanho }}</td>
-            <td>{{ item.valor }}</td>
+            <td>R$ {{ item.valor }}</td>
             <td class="text-center">
               <v-btn class="mx-2" fab x-small color="primary" @click="detalhes(item)">
                 <v-icon>$vuetify.icons.info</v-icon>
