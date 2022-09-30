@@ -44,16 +44,6 @@
                 <v-icon>$vuetify.icons.info</v-icon>
               </v-btn>
 
-              <v-btn
-                class="mx-2"
-                fab
-                x-small
-                color="primary"
-                @click="editar(item.id)"
-              >
-                <v-icon>$vuetify.icons.edit</v-icon>
-              </v-btn>
-
               <v-btn class="mx-2" fab x-small color="error" @click="excluir(item.id)">
                 <v-icon>$vuetify.icons.delete</v-icon>
               </v-btn>

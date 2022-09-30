@@ -69,9 +69,87 @@
             ></v-textarea>
           </v-col>
 
+          <v-col cols="12" md="5">
+            <v-autocomplete
+              v-model="produto_id"
+              :items="produtos"
+              item-value="id"
+              item-text="nome"
+              label="Produto"
+              :rules="[(v) => !!v || 'Produto é obrigatório.']"
+              required
+            ></v-autocomplete>
+          </v-col>
+
+          <v-col cols="12" md="5">
+            <v-text-field
+              v-model="quantidade"
+              :rules="quantidadeRules"
+              label="Quantidade do Produto"
+              type="number"
+            ></v-text-field>
+          </v-col>
+
+          <v-col cols="12" md="2">
+            <v-btn
+              class="success mt-3"
+              width="100%"
+              @click.stop="adicionarProdutoAoCarrinho()"
+            >
+              Adicionar
+            </v-btn>
+          </v-col>
+
+          <v-col cols="12">
+            Produtos:
+
+            <v-list>
+              <v-list-item>
+                <v-list-item-title class="d-flex">
+                  Produto <v-spacer></v-spacer> Quantidade
+                  <v-spacer></v-spacer> Valor Unit. <v-spacer></v-spacer>
+                  Valor Total
+                </v-list-item-title>
+                <v-list-item-icon>
+                  <v-icon> </v-icon>
+                </v-list-item-icon>
+              </v-list-item>
+
+              <v-list-item
+                :key="itemPedido.id"
+                v-for="(itemPedido, indexItemPedido) in itensPedido"
+              >
+                <v-list-item-title class="d-flex">
+                  {{ itemPedido.nome }} <v-spacer></v-spacer>
+                  {{ itemPedido.quantidade }} <v-spacer></v-spacer>
+                  {{ itemPedido.preco | formatoDinheiro }} <v-spacer></v-spacer>
+                  {{
+                    (itemPedido.preco * itemPedido.quantidade) | formatoDinheiro
+                  }}
+                </v-list-item-title>
+
+                <v-list-item-icon>
+                  <v-icon @click.stop="removerItemPedido(indexItemPedido)">
+                    mdi-delete
+                  </v-icon>
+                </v-list-item-icon>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-title class="d-flex">
+                  Valor Total <v-spacer></v-spacer>
+                  {{ valorTotalPedido | formatoDinheiro }}
+                </v-list-item-title>
+
+                <v-list-item-icon>
+                  <v-icon> </v-icon>
+                </v-list-item-icon>
+              </v-list-item>
+            </v-list>
+          </v-col>
+
           <v-col cols="12" md="6">
             <v-btn
-              :disabled="!valid"
               color="success"
               class="mr-4"
               @click="cadastrarPedido"
@@ -104,12 +182,44 @@ export default {
       { text: "Cheque", value: "cheque" },
     ],
 
+    itensPedido: [],
+
     cliente_id: null,
     clientes: [],
+
+    produto_id: null,
     produtos: [],
+
+    quantidade: 1,
+    quantidadeRules: [
+      (v) => !!v || "Quantidade do produto é obrigatório",
+      (v) => v > 1 || "Necessário ter ao menos 1 quantidade.",
+    ],
 
     observacao: "",
   }),
+
+  computed: {
+    valorTotalPedido: function () {
+      let total = 0;
+
+      if (this.itensPedido.length >= 1) {
+        this.itensPedido.forEach((produto) => {
+          total = total + (produto.preco * produto.quantidade)
+        })
+      }
+
+      return total;
+    },
+  },
+
+  filters: {
+    formatoDinheiro: function (preco) {
+      if (!preco) return "";
+
+      return `R$ ${parseFloat(preco).toFixed(2)}`;
+    },
+  },
 
   created() {
     this.listaDados();
@@ -119,8 +229,13 @@ export default {
     cadastrarPedido() {
       const formData = {
         data_pedido: this.data_pedido,
-        forma_pagamento: this.forma_pagamento,
         observacao: this.observacao,
+        forma_pagamento: this.forma_pagamento,
+        valor_total: this.valorTotalPedido,
+        cliente_id: this.cliente_id,
+        quantidade: this.itensPedido.map((pedido) => (pedido.quantidade)),
+        valor: this.itensPedido.map((pedido) => (parseFloat(pedido.preco * pedido.quantidade).toFixed(2))),
+        produto_id: this.itensPedido.map((pedido) => (pedido.id))
       };
 
       fetch(`${urlApi}/pedidos`, {
@@ -158,9 +273,17 @@ export default {
         .then((res) => {
           if ([200].includes(res.code)) {
             const { clientes, produtos } = res.data;
-            
-            this.clientes = clientes.map((cliente) => ({ text: cliente.nome, value: cliente.id }));
-            this.produtos = produtos.map((produto) => ({ text: produto.nome, value: produto.id }));
+
+            this.clientes = clientes.map((cliente) => ({
+              text: cliente.nome,
+              value: cliente.id,
+            }));
+
+            this.produtos = produtos.map((produto) => ({
+              id: produto.id,
+              nome: produto.nome,
+              preco: produto.valor,
+            }));
           } else {
             this.$toasted.error(res.message);
           }
@@ -169,6 +292,25 @@ export default {
 
     listarPedidos() {
       this.$router.push("/pedidos");
+    },
+
+    adicionarProdutoAoCarrinho() {
+      if (this.produto_id === null) {
+        this.$toasted.error("Informe um produto.");
+        return false;
+      }
+
+      const produto = this.produtos.find((produto) => {
+        return produto.id === this.produto_id;
+      });
+
+      this.itensPedido.push({ ...produto, quantidade: this.quantidade });
+    },
+
+    removerItemPedido(indexItemPedido) {
+      this.itensPedido = this.itensPedido.filter((produto, index) => {
+        return index !== indexItemPedido;
+      });
     },
   },
 };
