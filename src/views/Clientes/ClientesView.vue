@@ -39,7 +39,7 @@
                 fab
                 x-small
                 color="primary"
-                @click="getCliente(item.id)"
+                @click="editarCliente(item.id)"
               >
                 <v-icon>$vuetify.icons.edit</v-icon>
               </v-btn>
@@ -70,8 +70,6 @@ import urlApi from '@/plugins/urlApi';
 export default {
   name: "ClientesView",
 
-  components: {},
-
   data: () => ({
     clientes: [],
     page: 1,
@@ -87,8 +85,6 @@ export default {
 
   methods: {
     getClientes() {
-      console.log(urlApi);
-
       fetch(`${urlApi}/clientes?page=${this.pagination.current}`, {
         method: "GET",
         headers: {
@@ -116,15 +112,15 @@ export default {
     },
 
     novoCliente() {
-      this.$router.push('/novo-cliente')
+      this.$router.push('/novo-cliente');
     },
 
     detalhes(dados) {
       console.log(dados);
     },
 
-    getCliente(id) {
-      console.log(id);
+    editarCliente(id) {
+      this.$router.push(`/editar-cliente/${id}`);
     },
 
     excluir(id) {

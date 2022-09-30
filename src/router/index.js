@@ -11,8 +11,13 @@ const routes = [
   },
   {
     path: '/novo-cliente',
-    name: 'home',
+    name: 'novoCliente',
     component: () => import('../views/Clientes/NovoClienteView.vue')
+  },
+  {
+    path: '/editar-cliente/:id',
+    name: 'editarCliente',
+    component: () => import('../views/Clientes/EditarClienteView.vue')
   },
   {
     path: '/produtos',
