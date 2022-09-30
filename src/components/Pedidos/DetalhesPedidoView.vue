@@ -11,20 +11,28 @@
 
         <v-list-item class="grow">
           <v-list-item-content>
-            <v-list-item-title>Descreva detalhes do pedido</v-list-item-title>
-            <!-- <v-list-item-title>{{ dadosPedido.nome }}</v-list-item-title>
+            <v-list-item-title>Código do Produto: {{ dadosPedido.id }}</v-list-item-title>
 
             <v-spacer></v-spacer>
 
-            <v-list-item-subtitle>
-              {{ dadosCliente.email + ' | ' + dadosCliente.sexo }}
-            </v-list-item-subtitle>
+            <v-list-item-subtitle>Data do Pedido: {{ dadosPedido.data_pedido }}</v-list-item-subtitle>
+            <v-list-item-subtitle>Cliente: {{ dadosPedido?.cliente?.nome }}</v-list-item-subtitle>
+            <v-list-item-subtitle>Forma de Pagamento: {{ dadosPedido.forma_pagamento }}</v-list-item-subtitle>
+            <v-list-item-subtitle>Observação: {{ dadosPedido.observacao }}</v-list-item-subtitle>
 
             <v-spacer></v-spacer>
+            
+            <div v-for="item in dadosPedido.carrinhos" :key="item.carrinhos">
+                <v-spacer></v-spacer>
 
-            <v-list-item-subtitle class="text--primary">
-              {{ dadosCliente.cpf }}
-            </v-list-item-subtitle> -->
+                <v-list-item-subtitle>Produto: {{ item.produto.nome }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Quantidade: {{ item.produto.quantidade }}</v-list-item-subtitle>
+                <v-list-item-subtitle>Valor: R$ {{ item.produto.valor }}</v-list-item-subtitle>
+            </div>
+            
+            <v-spacer></v-spacer>
+
+            <v-list-item-subtitle class="text--primary">Valor Total: {{ dadosPedido.valor_total }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 

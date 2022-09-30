@@ -133,7 +133,7 @@ export default {
     },
 
     detalhes(dados) {
-      this.dadosCliente = dados;
+      this.dadosPedido = dados;
       this.toogleStatusDetalhesPedido();
     },
 
