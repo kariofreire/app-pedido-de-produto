@@ -1,24 +1,28 @@
 # app-pedido-de-produto
 
-## Project setup
+## Instale as dependências do projeto
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Sobe um servidor de desenvolvimento
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
+### Compila e minifica para produção
 ```
 yarn build
 ```
 
-### Lints and fixes files
+### Lints e corrige arquivos
 ```
 yarn lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Observações
+
+Altere o arquivo de urlApi e adicione o endereço da API a ser consumida.
+```bash
+$ nano src/plugins/urlApi.js
+```
