@@ -10,6 +10,16 @@
       > Novo Cliente </v-btn>
     </v-card-text>
 
+    <v-row>
+      <div>
+        <DetalhesView
+          :dadosCliente="dadosCliente"
+          :dialog="statusDetalhesCliente"
+          @fechar="toogleStatusDetalhesCliente"
+        />
+      </div>
+    </v-row>
+
     <v-card-text>
       <v-simple-table class="mt-5">
         <thead>
@@ -66,9 +76,14 @@
 
 <script>
 import urlApi from '@/plugins/urlApi';
+import DetalhesView from '@/components/Clientes/DetalhesView';
 
 export default {
   name: "ClientesView",
+
+  components: {
+    DetalhesView,
+  },
 
   data: () => ({
     clientes: [],
@@ -76,7 +91,9 @@ export default {
     pagination: {
       current: 1,
       total: 0
-    }
+    },
+    dadosCliente: {},
+    statusDetalhesCliente: false,
   }),
 
   created() {
@@ -116,7 +133,12 @@ export default {
     },
 
     detalhes(dados) {
-      console.log(dados);
+      this.dadosCliente = dados;
+      this.toogleStatusDetalhesCliente();
+    },
+
+    toogleStatusDetalhesCliente() {
+      this.statusDetalhesCliente = !this.statusDetalhesCliente;
     },
 
     editarCliente(id) {
